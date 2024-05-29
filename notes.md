@@ -11,3 +11,11 @@ I spend a lot of time on this while realizing that those problems might be handl
 we might not have all the files locally. However, here it is the case and a major bottle neck and should be taken care
 of to speed up the entire function.
 
+## images
+one unit corresponds to two pixels :) - this cost some time since I did not find the correct enterpoint.
+
+## improvements
+- convert everything to modules and run as script... maybe then also threading works
+
+## general notes
+- should have started earlier to build a complete baseline workflow

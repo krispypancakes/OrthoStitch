@@ -1,4 +1,3 @@
-from utils import OrthoLoader
 from time import time
 import os
 from PIL import Image

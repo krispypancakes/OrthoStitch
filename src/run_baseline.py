@@ -24,6 +24,8 @@ def main():
 
 if __name__ == "__main__":
     time1 = time()
-    main()
+    image = main()
+    # store image
+    image.save("cropped_image.jpeg", mode="jpeg")
     duration = time() - time1
     print(f"The entire procedure took {duration/60} minutes.")

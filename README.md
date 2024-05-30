@@ -16,13 +16,12 @@ After cloning the repo, please create a venv and install the requirements:
 
 
 # How to run
-You find the main module in the `src/utils.py` module. The object `OrthoLoader` takes care of 
+You find the main module with comments in `src/utils.py`. The object `OrthoLoader` takes care of 
 finding the correct files to load, loading them, cropping and also plotting.
 
 In the notebook `baseline.ipynb` you can download the data and run examples.
 
-You can run `python src/run_baseline.py` to check the time of an example using coordinates that need 4 images
-to display the desired point.
+You can run `python src/run_baseline.py` to check the time of an example using coordinates that need 4 images to display the desired point.
 
 # Results:
 Results of running  `src/run_baseline.py` on two different machines:

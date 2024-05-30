@@ -56,6 +56,7 @@ class OrthoLoader:
     
     def get_files(self) -> List[str]:
         """Returns a list of all the file paths we need to display the desired point."""
+        print("Analyzing request to extract the correct files.")
         # Get all files for the longitudinal fit
         x_files = [file for file in self.file_names if (str(int(self.x_min_crop/1000)) in file or str(int(self.x_max_crop / 1000)) in file)]
         # From those get all the files for the latitudinal range
@@ -71,7 +72,6 @@ class OrthoLoader:
         iterations = len(self.target_files) // 2
         for i in range(iterations):
             if self.get_x(self.target_files[i*2]) == self.get_x(self.target_files[i*2+1]):
-                print("X-values are same")
                 img1, img2 = self.load_img(self.target_files[i*2]), self.load_img(self.target_files[i*2+1])
                 print(f"Concat files {self.target_files[i*2]} and {self.target_files[i*2+1]} along the Y-axis")
                 time1 = time()
@@ -80,7 +80,6 @@ class OrthoLoader:
                 print(f"Concating two images took: {duration} sec.")
                 map_list.append(conc_long)
             else:
-                print("Y-values are same")
                 img1, img2 = self.load_img(self.target_files[i*2]), self.load_img(self.target_files[i*2+1])
                 print(f"Concat files {self.target_files[i*2]} and {self.target_files[i*2+1]} along the X-axis")
                 time1 = time()
@@ -145,3 +144,29 @@ class OrthoLoader:
             plt.gca().add_patch(rect)
             plt.legend()
             plt.show()
+
+def get_image(lat: int, long: int,radius: int, dataset: str, _print=False) -> Image.Image:
+    """
+    Inputs to the function are integer values alligning with the file names. 
+    Returns the cropped desired area as Image.
+    """
+    # create the loader object
+    print("Initialize Loader object.")
+    loader = OrthoLoader(x=lat, y=long, radius=radius, data_dir=dataset)
+    # check if there is one or more images that need to be loaded to display the desired area
+    if len(loader.target_files) > 1:
+        _map = loader.stitch_images()
+    else:
+        _map = loader.load_img()
+    # crop and resize the map
+    cropped = loader.crop_and_resize(_map)
+    
+    if not _print:
+        return cropped
+
+    # show an image of the entire map with the area highlighted that is going to be cropped
+    loader.plot_map(_map, target=True)
+    # show the resulting image
+    loader.plot_map(cropped)
+    
+    return cropped

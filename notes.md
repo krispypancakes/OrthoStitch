@@ -19,3 +19,6 @@ one unit corresponds to two pixels :) - this cost some time since I did not find
 
 ## general notes
 - should have started earlier to build a complete baseline workflow
+- in the initial sketch of the get_image() function, the values are given as floats. Given the description of the
+file names, ints were a more intuitive option, which might also be a wrong choice of course
+

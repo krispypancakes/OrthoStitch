@@ -43,6 +43,13 @@ Strategies for optimizing this were:
 None of the above strategies worked as I liked or were not implemented correctly, so that the baseline version is the only working solution.
 I kept `src/run_threading.py` as an example of the strategies I tried, but this also did not improve speed of loading on the setups I used.
 
+## Improvements
+Granted there would be mor time, what could be added or improved:
+- speed of loading obviously 
+- proper logging
+- using a linter to enforce a style
+- (better) error / exception handling
+- tests and assertions
 
 ## The get_image() function
 

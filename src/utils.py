@@ -32,6 +32,11 @@ class OrthoLoader:
         self.target_files = self.get_files()
         # Get coordinates of the chosen files
         self.x_min_map, self.x_max_map, self.y_min_map, self.y_max_map = self.get_image_coords(self.target_files)
+        # Get start and end values for cropping; one unit of coordinate values corresponds to 10 pixels
+        self.x_start = (self.x_min_crop - self.x_min_map) *10 
+        self.x_end = (self.x_max_crop - self.x_min_map) * 10
+        self.y_start = (self.y_max_map - self.y_max_crop) *10
+        self.y_end = (self.y_max_map - self.y_min_crop) * 10
 
     def get_x(self, file_path: str) -> int:
         """Returns the starting point of X-value of an image"""
@@ -105,13 +110,8 @@ class OrthoLoader:
     
     def crop_and_resize(self, image_array: np.ndarray) -> Image:
         """Returns the cropped and resized array as PIL.Image."""
-        # Get start and end values for cropping; one unit of coordinate values corresponds to 10 pixels
-        x_start = (self.x_min_crop - self.x_min_map) *10 
-        x_end = (self.x_max_crop - self.x_min_map) * 10
-        y_start = (self.y_min_crop - self.y_min_map) *10
-        y_end = (self.y_max_crop - self.y_min_map) * 10
         # Cut out the desired area
-        crop = Image.fromarray(image_array[y_start:y_end, x_start:x_end])
+        crop = Image.fromarray(image_array[self.y_start:self.y_end, self.x_start:self.x_end])
         crop = crop.resize((256,256))
 
         return crop

@@ -1,4 +1,4 @@
-from utils import OrthoLoader
+from utils import get_image
 from time import time
 
 
@@ -8,18 +8,7 @@ def main():
     radius = 100
     data_dir = "data/orthophotos/nw"
 
-    loader = OrthoLoader(x=x, y=y, radius=radius, data_dir=data_dir)
-
-    if len(loader.target_files) > 1:
-        _map = loader.stitch_images()
-    else:
-        _map = loader.load_img()
-
-    # loader.plot_map(_map, target=True)
-    cropped = loader.crop_and_resize(_map)
-    # loader.plot_map(cropped)
-
-    return cropped
+    return get_image(x, y, radius, data_dir)
 
 
 if __name__ == "__main__":

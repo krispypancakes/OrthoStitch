@@ -54,3 +54,11 @@ Granted there would be mor time, what could be added or improved:
 ## The get_image() function
 
 The function takes integers according to the file names as described in the initial notebook instead of floats as in the example function. 
+
+## Progress
+
+The `OrthoLoader` class has a new parameter: `bool: use_c`. This makes use of a script written in C which is 
+compiled as a shared library. Code is here: `load_jpeg2000.c` and if `use_c = True` the regular loading 
+function is swapped for a function that uses this library to load the images.
+
+Time on the Macbook Air: 1.39 min.

@@ -8,7 +8,7 @@ def main():
     radius = 100
     data_dir = "data/orthophotos/nw"
 
-    return get_image(x, y, radius, data_dir)
+    return get_image(x, y, radius, data_dir, use_c=True)
 
 
 if __name__ == "__main__":

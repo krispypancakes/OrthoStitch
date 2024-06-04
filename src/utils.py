@@ -1,6 +1,7 @@
 """
 Helper and utiliy functions
 """
+import ctypes
 import numpy as np
 from PIL import Image
 from typing import List, Union, Optional
@@ -9,12 +10,42 @@ import matplotlib.pyplot as plt
 from time import time
 
 
+libjpeg2000 = ctypes.CDLL("src/libjpeg2000.so")
+
+class ImageData(ctypes.Structure):
+    _fields_ = [("width", ctypes.c_int),
+                ("height", ctypes.c_int),
+                ("num_components", ctypes.c_int),
+                ("data", ctypes.POINTER(ctypes.c_ubyte))]
+
+
+def c_load(filename: str) -> np.ndarray:
+    libjpeg2000.load_jpeg2000.restype = ctypes.POINTER(ImageData)
+    libjpeg2000.load_jpeg2000.argtypes = [ctypes.c_char_p]
+    libjpeg2000.free_image_data.argtypes = [ctypes.POINTER(ImageData)]
+    bytes_filename = filename.encode("utf-8")
+    img_data_ptr = libjpeg2000.load_jpeg2000(bytes_filename)
+    if not img_data_ptr:
+        raise Warning("no valid pointer")
+    img_data = img_data_ptr.contents
+    width, height, num_components = img_data.width, img_data.height, img_data.num_components
+    pixel_data = np.ctypeslib.as_array(img_data.data, shape=(height, width, num_components))
+    # copy the rgb channels so that we deal with memory in python world
+    img = pixel_data[:, :, :3].copy()
+    # Free the image data
+    libjpeg2000.free_image_data(img_data_ptr)
+    print("Memory freed")
+    return img
+
+
 class OrthoLoader:
-    def __init__(self, x: int, y: int, radius: int, data_dir: str) -> None:
+    def __init__(self, x: int, y: int, radius: int, data_dir: str, use_c: bool = False) -> None:
         self.x = x
         self.y = y
         self.radius = radius
         self.data_dir = data_dir
+        # whether or not to use the c lib to load images
+        self.use_c = use_c 
         self.file_names = sorted(os.listdir(data_dir))
         # determine the available range in our data and check if the desired values fit
         file_x_vals = [self.get_x(file_path=file_name) for file_name in self.file_names]
@@ -54,9 +85,13 @@ class OrthoLoader:
         if len(self.target_files) == 1:
             file_path = self.target_files[0]
         print(f"loading image {file_path}.")
-        img = np.array(Image.open(file_path).convert("RGB"))
-        duration = time() - time1
-        print(f"Loading the image took: {duration/60} min.")
+        if not self.use_c:
+            img = np.asrray(Image.open(file_path).convert("RGB"))
+        else:
+            print("Using C speedup")
+            img = c_load(file_path)
+        duration = (time() - time1) / 60
+        print(f"Loading the image took: {duration} min.")
         return img
     
     def get_files(self) -> List[str]:
@@ -145,14 +180,14 @@ class OrthoLoader:
             plt.legend()
             plt.show()
 
-def get_image(lat: int, long: int,radius: int, dataset: str, _print=False) -> Image.Image:
+def get_image(lat: int, long: int,radius: int, dataset: str, _print: bool =False, use_c: bool = False) -> Image.Image:
     """
     Inputs to the function are integer values alligning with the file names. 
     Returns the cropped desired area as Image.
     """
     # create the loader object
     print("Initialize Loader object.")
-    loader = OrthoLoader(x=lat, y=long, radius=radius, data_dir=dataset)
+    loader = OrthoLoader(x=lat, y=long, radius=radius, data_dir=dataset, use_c=use_c)
     # check if there is one or more images that need to be loaded to display the desired area
     if len(loader.target_files) > 1:
         _map = loader.stitch_images()

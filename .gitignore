@@ -1,7 +1,7 @@
 .venv
 .vscode
 .python-version
-.DS_Store
+**/.DS_Store
 data/
 **/__pycache__/
 *.jp*

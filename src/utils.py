@@ -53,7 +53,7 @@ class OrthoLoader:
         # Determine the range of our data 
         file_min_long, file_max_long = min(file_x_vals), max(file_x_vals) + 999
         file_min_lat, file_max_lat = min(file_y_vals), max(file_y_vals) + 999
-        # Make sure the request can be handled
+        # Make sure the request can be handled / this should probably check for x_min_crop, etc
         assert file_min_long <= x <= file_max_long, f"X value should be between {file_min_long} and {file_max_long}. Actual value: {x}"
         assert file_min_lat <= y <= file_max_lat, f"Y value should be between {file_min_lat} and {file_max_lat}. Actual value: {y}"
         # Desired area to choose files and crop image
@@ -86,7 +86,7 @@ class OrthoLoader:
             file_path = self.target_files[0]
         print(f"loading image {file_path}.")
         if not self.use_c:
-            img = np.asrray(Image.open(file_path).convert("RGB"))
+            img = np.asarray(Image.open(file_path).convert("RGB"))
         else:
             print("Using C speedup")
             img = c_load(file_path)

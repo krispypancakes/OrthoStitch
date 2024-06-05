@@ -1,6 +1,25 @@
-# Coding Challenge
+# OrthoStitch
 
-# Prerequisites
+I created this repo as part of a coding challenge for a job interview. Objective was to create a function `get_image()` that takes
+coordinates and a radius and returns a square cropped and resized image of the initial `.jp2` image(s). The image files are stored
+on disk, initially downloaded in the data dir:
+
+```
+SAMPLE_URL = "https://drive.usercontent.google.com/download?id=140PpLsdnVOQVIp5ia9jT_yvqtcWtF8Gj&export=download&confirm=t&uuid=483b1776-4e25-4976-9837-b498c823754a"
+urlretrieve(SAMPLE_URL, "orthophotos.zip")
+
+# check if data dir exist and create otherwise
+if not os.path.exists("../data"):
+    os.makedirs("../data")
+
+with zipfile.ZipFile("orthophotos.zip", 'r') as zip_ref:
+    zip_ref.extractall("../data")
+```
+
+Major bottleneck is loading the images into memory, I/O being the issue here. Filenames give information of the latitudinal
+and longitudinal range that is displayed on the image. More detailed instrunctions in `notebooks/initial_nb.ipynb`.
+
+# Setup
 
 Python version: 3.10.12
 
@@ -43,7 +62,7 @@ Strategies for optimizing this were:
 None of the above strategies worked as I liked or were not implemented correctly, so that the baseline version is the only working solution.
 I kept `src/run_threading.py` as an example of the strategies I tried, but this also did not improve speed of loading on the setups I used.
 
-## Improvements
+## Possible Improvements
 Granted there would be mor time, what could be added or improved:
 - speed of loading obviously 
 - proper logging
@@ -55,7 +74,7 @@ Granted there would be mor time, what could be added or improved:
 
 The function takes integers according to the file names as described in the initial notebook instead of floats as in the example function. 
 
-## Progress
+## Progress / updates
 
 The `OrthoLoader` class has a new parameter: `bool: use_c`. This makes use of a script written in C which is 
 compiled as a shared library. Code is here: `load_jpeg2000.c`. This makes use of `openjpeg`, which needs to 

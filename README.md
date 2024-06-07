@@ -17,7 +17,7 @@ with zipfile.ZipFile("orthophotos.zip", 'r') as zip_ref:
 ```
 
 Major bottleneck is loading the images into memory, I/O being the issue here. Filenames give information of the latitudinal
-and longitudinal range that is displayed on the image. More detailed instrunctions in `notebooks/initial_nb.ipynb`.
+and longitudinal range that is displayed on the image. More detailed instrunctions in `Challenge.md`.
 
 # Setup
 

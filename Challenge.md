@@ -67,4 +67,4 @@ The expected deliverables include:
 You have **4 days** starting from the time you received the invitation to complete the challenge.
 When you feel ready share the Colab Notebook with us.
 
-**Have Fun!!!**
+**Have Fun!!**
